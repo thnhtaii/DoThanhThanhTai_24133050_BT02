@@ -26,7 +26,6 @@ public class Category implements Serializable {
     @Column(name = "status")
     private int status;
 
-    //bi-directional many-to-one association to Video
     @OneToMany(mappedBy = "category")
     private List<Video> videos;
 

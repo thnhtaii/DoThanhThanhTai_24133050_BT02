@@ -73,7 +73,7 @@ public class CategoryController extends HttpServlet {
         if (url.contains("/admin/category/insert")) {
             String categoryname = req.getParameter("categoryname");
             String statusParam = req.getParameter("status");
-            int status = 1; // Default to active
+            int status = 1;
             if (statusParam != null && !statusParam.isEmpty()) {
                 try {
                     status = Integer.parseInt(statusParam);
@@ -119,7 +119,7 @@ public class CategoryController extends HttpServlet {
             int categoryid = Integer.parseInt(req.getParameter("categoryid"));
             String categoryname = req.getParameter("categoryname");
             String statusParam = req.getParameter("status");
-            int status = 1; // Default to active
+            int status = 1;
             if (statusParam != null && !statusParam.isEmpty()) {
                 try {
                     status = Integer.parseInt(statusParam);
@@ -143,7 +143,6 @@ public class CategoryController extends HttpServlet {
             try {
                 Part part = req.getPart("images1");
                 if (part.getSize() > 0) {
-                    // xóa file cũ trên thư mục
                     if (fileold != null && !fileold.isEmpty() && fileold.length() >= 5
                             && !fileold.substring(0, 5).equals("https")) {
                         deleteFile(uploadPath + "\\" + fileold);
