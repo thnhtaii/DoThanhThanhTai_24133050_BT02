@@ -52,9 +52,12 @@ public class CategoryController extends HttpServlet {
 
         } else if (url.contains("/admin/category/delete")) {
             int id = Integer.parseInt(req.getParameter("id"));
+            System.out.println("=== DANG THUC HIEN XOA ID: " + id + " ===");
             try {
                 cateService.delete(id);
+                System.out.println("=== XOA THANH CONG ID: " + id + " IN DB ===");
             } catch (Exception e) {
+                System.out.println("=== LOI KHI XOA ID: " + id + " ===");
                 e.printStackTrace();
             }
             resp.sendRedirect(req.getContextPath() + "/admin/categories");
