@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 
 import vn.iotstar.config.JPAConfig;
 import vn.iotstar.dao.CategoryDao;
