@@ -467,9 +467,14 @@
                                                     <a href="<c:url value='/admin/product/edit?id=${prod.productId}'/>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
                                                         <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
                                                     </a>
-                                                    <a href="<c:url value='/admin/product/delete?id=${prod.productId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm [${prod.productName}] không?')" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-danger rounded-pill px-3 btn-delete-product" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#deleteProductModal" 
+                                                            data-name="${prod.productName}" 
+                                                            data-url="<c:url value='/admin/product/delete?id=${prod.productId}'/>">
                                                         <i class="fa-solid fa-trash-can me-1"></i> Xóa
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -491,9 +496,35 @@
         </div>
     </div>
 
+    <!-- Modal Xác Nhận Xóa Sản Phẩm Hiện Đại -->
+    <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-body text-center p-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle mb-3" style="width: 70px; height: 70px;">
+                        <i class="fa-solid fa-trash-can fs-2"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2" id="deleteProductModalTitle">Xác Nhận Xóa Sản Phẩm</h4>
+                    <p class="text-secondary mb-4" id="deleteProductModalMessage">
+                        Bạn có chắc chắn muốn xóa sản phẩm này khỏi hệ thống không?
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold border" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark me-1"></i> Hủy Bỏ
+                        </button>
+                        <a id="btnConfirmDeleteProd" href="#" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                            <i class="fa-solid fa-trash-can me-1"></i> Xóa Sản Phẩm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý nút mở/đóng menu con
             var toggleBtns = document.querySelectorAll('.btn-toggle-submenu');
             toggleBtns.forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
@@ -510,6 +541,24 @@
                             targetMenu.classList.add('show');
                             btn.setAttribute('aria-expanded', 'true');
                         }
+                    }
+                });
+            });
+
+            // Xử lý Modal Xác nhận xóa sản phẩm trên giao diện
+            var deleteProdBtns = document.querySelectorAll('.btn-delete-product');
+            var modalMsg = document.getElementById('deleteProductModalMessage');
+            var confirmBtn = document.getElementById('btnConfirmDeleteProd');
+
+            deleteProdBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var prodName = btn.getAttribute('data-name');
+                    var deleteUrl = btn.getAttribute('data-url');
+                    if (modalMsg) {
+                        modalMsg.innerHTML = 'Bạn có chắc chắn muốn xóa sản phẩm <strong class="text-danger">[' + prodName + ']</strong> không?<br><span class="small text-muted">Hành động này sẽ xóa sản phẩm khỏi kho hàng.</span>';
+                    }
+                    if (confirmBtn) {
+                        confirmBtn.setAttribute('href', deleteUrl);
                     }
                 });
             });
