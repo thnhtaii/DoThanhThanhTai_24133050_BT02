@@ -338,8 +338,7 @@
     <!-- Footer -->
     <footer>
         <div class="container text-center">
-            <p class="mb-2 fw-semibold text-white">Dự án Lập trình Web - JPA & Hibernate CRUD</p>
-            <p class="small mb-0">Sinh viên: Đỗ Thanh Thành Tài - MSSV: 24133050</p>
+            <p class="small mb-0 text-white-50">DT SHOP &bull; Sinh viên: Đỗ Thanh Thành Tài - MSSV: 24133050</p>
         </div>
     </footer>
 

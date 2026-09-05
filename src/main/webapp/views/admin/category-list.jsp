@@ -144,13 +144,49 @@
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
         }
+        .sidebar-link-text {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar-link-text:hover {
+            color: white;
+        }
+        .btn-toggle-submenu {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .btn-toggle-submenu:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .sidebar-link.active .btn-toggle-submenu {
+            color: white;
+        }
+        .submenu-chevron {
+            font-size: 0.72rem;
+            transition: transform 0.3s ease;
+        }
+        .btn-toggle-submenu[aria-expanded="true"] .submenu-chevron {
+            transform: rotate(180deg);
+        }
         .submenu {
             list-style: none;
             padding-left: 36px;
             margin: 4px 0 8px 0;
         }
         .submenu-link {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 7px 12px;
             color: #94a3b8;
             text-decoration: none;
@@ -165,6 +201,7 @@
         .submenu-link.active {
             color: #60a5fa;
             font-weight: 600;
+            background-color: rgba(37, 99, 235, 0.12);
         }
 
         /* Main Wrapper */
@@ -302,22 +339,36 @@
 
             <div class="menu-header">Quản trị dữ liệu</div>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/categories'/>" class="sidebar-link active">
-                    <i class="fa-solid fa-folder-tree"></i> Quản lý Danh mục
-                </a>
-                <ul class="submenu">
-                    <li><a href="<c:url value='/admin/categories'/>" class="submenu-link active"><i class="fa-solid fa-list me-1"></i> Danh sách danh mục</a></li>
-                    <li><a href="<c:url value='/admin/category/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm danh mục mới</a></li>
-                </ul>
+                <div class="sidebar-link d-flex align-items-center justify-content-between active">
+                    <a href="<c:url value='/admin/categories'/>" class="sidebar-link-text flex-grow-1">
+                        <i class="fa-solid fa-folder-tree"></i> Quản lý Danh mục
+                    </a>
+                    <button type="button" class="btn-toggle-submenu" data-bs-target="#categorySubmenu" aria-expanded="true" title="Hiện / ẩn danh mục con">
+                        <i class="fa-solid fa-chevron-down submenu-chevron"></i>
+                    </button>
+                </div>
+                <div class="collapse show" id="categorySubmenu">
+                    <ul class="submenu">
+                        <li><a href="<c:url value='/admin/categories'/>" class="submenu-link active"><i class="fa-solid fa-list me-2"></i> Danh sách danh mục</a></li>
+                        <li><a href="<c:url value='/admin/category/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-2"></i> Thêm danh mục mới</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/products'/>" class="sidebar-link">
-                    <i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm
-                </a>
-                <ul class="submenu">
-                    <li><a href="<c:url value='/admin/products'/>" class="submenu-link"><i class="fa-solid fa-list me-1"></i> Danh sách sản phẩm</a></li>
-                    <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm mới</a></li>
-                </ul>
+                <div class="sidebar-link d-flex align-items-center justify-content-between">
+                    <a href="<c:url value='/admin/products'/>" class="sidebar-link-text flex-grow-1">
+                        <i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm
+                    </a>
+                    <button type="button" class="btn-toggle-submenu" data-bs-target="#productSubmenu" aria-expanded="false" title="Hiện / ẩn sản phẩm con">
+                        <i class="fa-solid fa-chevron-down submenu-chevron"></i>
+                    </button>
+                </div>
+                <div class="collapse" id="productSubmenu">
+                    <ul class="submenu">
+                        <li><a href="<c:url value='/admin/products'/>" class="submenu-link"><i class="fa-solid fa-list me-2"></i> Danh sách sản phẩm</a></li>
+                        <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-2"></i> Thêm sản phẩm mới</a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
@@ -439,5 +490,28 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggleBtns = document.querySelectorAll('.btn-toggle-submenu');
+            toggleBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var targetSelector = btn.getAttribute('data-bs-target');
+                    var targetMenu = document.querySelector(targetSelector);
+                    if (targetMenu) {
+                        var isOpen = targetMenu.classList.contains('show');
+                        if (isOpen) {
+                            targetMenu.classList.remove('show');
+                            btn.setAttribute('aria-expanded', 'false');
+                        } else {
+                            targetMenu.classList.add('show');
+                            btn.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
