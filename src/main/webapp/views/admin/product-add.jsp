@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh Sửa Danh Mục - DT SHOP Admin</title>
+    <title>Thêm Sản Phẩm Mới - DT SHOP Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -205,7 +205,7 @@
             border-radius: 20px;
             border: 1px solid #f1f5f9;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            max-width: 800px;
+            max-width: 880px;
             overflow: hidden;
         }
         .card-custom-header {
@@ -218,22 +218,13 @@
         .card-custom-body {
             padding: 30px;
         }
-        .preview-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 14px;
-            object-fit: cover;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            margin-top: 8px;
-        }
     </style>
 </head>
 <body>
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="<c:url value='/admin/categories'/>" class="sidebar-brand">
+        <a href="<c:url value='/admin/products'/>" class="sidebar-brand">
             <div class="brand-logo-icon"><i class="fa-solid fa-cube"></i></div>
             <div>
                 <div class="brand-name">DT SHOP</div>
@@ -263,7 +254,7 @@
 
             <div class="menu-header">Quản trị dữ liệu</div>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/categories'/>" class="sidebar-link active">
+                <a href="<c:url value='/admin/categories'/>" class="sidebar-link">
                     <i class="fa-solid fa-folder-tree"></i> Quản lý Danh mục
                 </a>
                 <ul class="submenu">
@@ -272,12 +263,12 @@
                 </ul>
             </li>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/products'/>" class="sidebar-link">
+                <a href="<c:url value='/admin/products'/>" class="sidebar-link active">
                     <i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm
                 </a>
                 <ul class="submenu">
                     <li><a href="<c:url value='/admin/products'/>" class="submenu-link"><i class="fa-solid fa-list me-1"></i> Danh sách sản phẩm</a></li>
-                    <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm mới</a></li>
+                    <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link active"><i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm mới</a></li>
                 </ul>
             </li>
         </ul>
@@ -301,62 +292,71 @@
 
         <div class="content">
             <div class="page-header-box">
-                <h1 class="page-title">Cập Nhật Danh Mục</h1>
-                <p class="page-subtitle">Chỉnh sửa thông tin chi tiết danh mục #${cate.categoryId}</p>
+                <h1 class="page-title">Thêm Sản Phẩm Mới</h1>
+                <p class="page-subtitle">Nhập thông tin sản phẩm và liên kết với danh mục trong hệ thống DT SHOP</p>
             </div>
 
             <div class="card-custom">
                 <div class="card-custom-header">
-                    <i class="fa-solid fa-pen-to-square text-primary me-2"></i> Chỉnh Sửa Danh Mục: ${cate.categoryname}
+                    <i class="fa-solid fa-circle-plus text-primary me-2"></i> Form Thông Tin Sản Phẩm
                 </div>
                 <div class="card-custom-body">
-                    <form action="<c:url value='/admin/category/update'/>" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="categoryid" value="${cate.categoryId}">
-
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold text-secondary small">Tên Danh Mục <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-lg" name="categoryname" value="${cate.categoryname}" required>
+                    <form action="<c:url value='/admin/product/insert'/>" method="post" enctype="multipart/form-data">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold text-secondary small">Tên Sản Phẩm <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" name="productName" placeholder="Nhập tên sản phẩm..." required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">Danh Mục <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-lg" name="categoryId" required>
+                                    <c:forEach items="${categories}" var="c">
+                                        <option value="${c.categoryId}">${c.categoryname}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold text-secondary small">Trạng Thái Hoạt Động</label>
-                            <select class="form-select" name="status">
-                                <option value="1" ${cate.status == 1 ? 'selected' : ''}>Hoạt động (Hiển thị cho khách hàng)</option>
-                                <option value="0" ${cate.status != 1 ? 'selected' : ''}>Khóa (Tạm ẩn danh mục)</option>
-                            </select>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">Giá Bán (VNĐ) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="price" placeholder="ví dụ: 1500000" min="0" step="1000" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">Số Lượng Kho <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="quantity" placeholder="ví dụ: 25" min="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold text-secondary small">Trạng Thái</label>
+                                <select class="form-select" name="status">
+                                    <option value="1" selected>Hoạt động (Đang bán)</option>
+                                    <option value="0">Khóa (Tạm ngừng)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary small">Mô Tả Chi Tiết Sản Phẩm</label>
+                            <textarea class="form-control" name="description" rows="4" placeholder="Nhập thông tin mô tả chi tiết, thông số kỹ thuật..."></textarea>
                         </div>
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-secondary small">Tải Ảnh Mới Thay Thế (Tùy chọn)</label>
+                                <label class="form-label fw-semibold text-secondary small">Tải Ảnh Lên Từ Máy Tính</label>
                                 <input type="file" class="form-control" name="images1" accept="image/*">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-secondary small">Hoặc Cập Nhật Đường Dẫn URL Ảnh</label>
-                                <input type="text" class="form-control" name="images" value="${cate.images}">
+                                <label class="form-label fw-semibold text-secondary small">Hoặc Dán Đường Dẫn URL Ảnh Trực Tiếp</label>
+                                <input type="text" class="form-control" name="images" placeholder="https://example.com/image.jpg">
                             </div>
                         </div>
 
-                        <c:if test="${not empty cate.images}">
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold text-secondary small d-block">Ảnh hiện tại:</label>
-                                <c:choose>
-                                    <c:when test="${cate.images.startsWith('http')}">
-                                        <img src="${cate.images}" class="preview-img" alt="Preview" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='/image?fname=${cate.images}'/>" class="preview-img" alt="Preview" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </c:if>
-
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <a href="<c:url value='/admin/categories'/>" class="btn btn-outline-secondary rounded-pill px-4">
+                            <a href="<c:url value='/admin/products'/>" class="btn btn-outline-secondary rounded-pill px-4">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Quay lại
                             </a>
                             <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow">
-                                <i class="fa-solid fa-check me-2"></i> Cập Nhật Danh Mục
+                                <i class="fa-solid fa-check me-2"></i> Lưu Sản Phẩm
                             </button>
                         </div>
                     </form>

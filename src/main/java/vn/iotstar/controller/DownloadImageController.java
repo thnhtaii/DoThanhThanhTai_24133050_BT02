@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,11 +19,24 @@ public class DownloadImageController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String DEFAULT_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" viewBox=\"0 0 200 200\">"
+            + "<rect width=\"200\" height=\"200\" fill=\"#e2e8f0\" rx=\"16\"/>"
+            + "<circle cx=\"100\" cy=\"80\" r=\"32\" fill=\"#94a3b8\"/>"
+            + "<path d=\"M50 160c0-28 22-50 50-50s50 22 50 50\" fill=\"#94a3b8\"/>"
+            + "<text x=\"100\" y=\"185\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\" fill=\"#64748b\" text-anchor=\"middle\">DT SHOP</text>"
+            + "</svg>";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String fname = req.getParameter("fname");
-        if (fname == null || fname.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        if (fname == null || fname.trim().isEmpty()) {
+            sendDefaultSvg(resp);
+            return;
+        }
+
+        // Nếu fname là URL bên ngoài (http / https), chuyển hướng trực tiếp
+        if (fname.startsWith("http://") || fname.startsWith("https://")) {
+            resp.sendRedirect(fname);
             return;
         }
 
@@ -30,7 +44,7 @@ public class DownloadImageController extends HttpServlet {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            sendDefaultSvg(resp);
             return;
         }
 
@@ -48,6 +62,15 @@ public class DownloadImageController extends HttpServlet {
             while ((bytesRead = fis.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
+        }
+    }
+
+    private void sendDefaultSvg(HttpServletResponse resp) throws IOException {
+        resp.setContentType("image/svg+xml");
+        byte[] bytes = DEFAULT_SVG.getBytes(StandardCharsets.UTF_8);
+        resp.setContentLength(bytes.length);
+        try (OutputStream os = resp.getOutputStream()) {
+            os.write(bytes);
         }
     }
 }

@@ -1,96 +1,173 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Danh Sách Danh Mục - Admin Panel</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Danh Mục - DT SHOP Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+            --content-bg: #f8fafc;
+        }
         body {
-            background-color: #f5f5f5;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--content-bg);
+            color: #1e293b;
             margin: 0;
             padding: 0;
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
+        /* Sidebar */
         .sidebar {
-            width: 250px;
-            background-color: #0090d9;
-            color: white;
+            width: 270px;
+            background-color: var(--sidebar-bg);
+            color: #f8fafc;
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+            z-index: 100;
         }
-        .sidebar-header {
-            padding: 15px 20px;
-            font-size: 24px;
-            font-weight: bold;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .sidebar-brand {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: white;
         }
-        .profile-section {
+        .sidebar-brand:hover {
+            color: white;
+        }
+        .brand-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            margin-right: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .admin-profile-box {
             padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 15px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .profile-img {
-            width: 100px;
-            height: 100px;
+        .admin-avatar {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            border: 3px solid white;
-            object-fit: cover;
-            margin: 0 auto 10px auto;
-            display: block;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
-        .profile-role {
-            font-size: 14px;
-            font-weight: 500;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #22c55e;
+            margin-right: 4px;
         }
         .sidebar-menu {
             list-style: none;
-            padding: 0;
+            padding: 10px 15px;
             margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
         }
-        .sidebar-menu li a {
-            display: block;
-            padding: 12px 20px;
-            color: white;
+        .menu-header {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #64748b;
+            padding: 12px 12px 6px 12px;
+            letter-spacing: 0.8px;
+        }
+        .sidebar-item {
+            margin-bottom: 4px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 11px 14px;
+            color: #94a3b8;
             text-decoration: none;
-            font-size: 14px;
-            transition: background 0.2s;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        .sidebar-menu li a i {
-            margin-right: 10px;
-            width: 20px;
+        .sidebar-link i {
+            width: 22px;
+            font-size: 1.05rem;
+            margin-right: 12px;
             text-align: center;
         }
-        .menu-dashboard a {
-            background-color: #d9534f;
+        .sidebar-link:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
         }
-        .menu-category {
-            background-color: #222;
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
         }
         .submenu {
             list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: #2b2b2b;
+            padding-left: 36px;
+            margin: 4px 0 8px 0;
         }
-        .submenu li a {
-            padding: 10px 20px 10px 40px;
-            font-size: 13px;
-            color: #aaa;
+        .submenu-link {
+            display: block;
+            padding: 7px 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.86rem;
+            border-radius: 8px;
+            transition: all 0.2s;
         }
-        .submenu li a:hover {
+        .submenu-link:hover {
             color: white;
-            background-color: #333;
+            background-color: rgba(255, 255, 255, 0.05);
         }
-        .submenu li.active a {
-            color: white;
+        .submenu-link.active {
+            color: #60a5fa;
+            font-weight: 600;
         }
+
+        /* Main Wrapper */
         .wrapper {
             flex-grow: 1;
             display: flex;
@@ -99,183 +176,268 @@
             overflow: hidden;
         }
         .topbar {
-            background-color: #0090d9;
-            height: 50px;
+            background-color: white;
+            height: 68px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .topbar-user {
-            margin-right: 15px;
-            font-size: 14px;
-        }
-        .btn-logout {
-            background-color: #d9534f;
-            border-color: #d43f3a;
-            color: white;
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 3px;
-            border: 1px solid transparent;
-            cursor: pointer;
-        }
-        .btn-logout:hover {
-            background-color: #c9302c;
-            color: white;
+            padding: 0 30px;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            flex-shrink: 0;
         }
         .content {
             padding: 30px;
             flex-grow: 1;
             overflow-y: auto;
         }
+        .page-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
         .page-title {
-            color: #ff0000;
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 28px;
-            font-weight: 500;
+            color: #0f172a;
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0;
         }
         .page-subtitle {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 25px;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 4px;
+            margin-bottom: 0;
         }
-        .panel-custom {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+
+        /* Modern Table Card */
+        .card-custom {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
         }
-        .panel-custom-header {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-            color: #333;
+        .card-custom-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .panel-custom-body {
-            padding: 15px;
+        .category-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+            background-color: #f8fafc;
         }
-        .category-img {
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .table-custom {
+            margin-bottom: 0;
+        }
+        .table-custom th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table-custom td {
+            padding: 16px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
         }
     </style>
 </head>
 <body>
+
+    <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-header">Dashboard</div>
-        <div class="profile-section">
-            <svg class="profile-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid white; display: block; margin: 0 auto 10px auto; background-color: #e0e2e5;">
-                <circle cx="50" cy="37" r="18" fill="#71767a"/>
-                <path d="M50 58c-18 0-30 10-32 22v4h64v-4c-2-12-14-22-32-22z" fill="#71767a"/>
-            </svg>
-            <div class="profile-role">Bạn là Admin</div>
+        <a href="<c:url value='/admin/categories'/>" class="sidebar-brand">
+            <div class="brand-logo-icon">
+                <i class="fa-solid fa-cube"></i>
+            </div>
+            <div>
+                <div class="brand-name">DT SHOP</div>
+                <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Admin Console</div>
+            </div>
+        </a>
+
+        <!-- Admin Profile -->
+        <div class="admin-profile-box">
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div style="overflow: hidden;">
+                <div class="fw-bold text-white text-truncate small">
+                    ${sessionScope.account != null && not empty sessionScope.account.fullname ? sessionScope.account.fullname : 'Admin DT SHOP'}
+                </div>
+                <div class="text-secondary small d-flex align-items-center mt-1" style="font-size: 0.75rem;">
+                    <span class="status-dot"></span> Đang hoạt động
+                </div>
+            </div>
         </div>
+
+        <!-- Navigation Menu -->
         <ul class="sidebar-menu">
-            <li class="menu-dashboard">
-                <a href="#"><i class="fa fa-dashboard"></i> Dashboard</a>
+            <div class="menu-header">Hệ thống & Cửa hàng</div>
+            <li class="sidebar-item">
+                <a href="<c:url value='/home'/>" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-store text-primary"></i> Xem Cửa Hàng (DT SHOP)
+                </a>
             </li>
-            <li class="menu-category">
-                <a href="#"><i class="fa fa-folder"></i> Quản lý Danh mục</a>
+
+            <div class="menu-header">Quản trị dữ liệu</div>
+            <li class="sidebar-item">
+                <a href="<c:url value='/admin/categories'/>" class="sidebar-link active">
+                    <i class="fa-solid fa-folder-tree"></i> Quản lý Danh mục
+                </a>
                 <ul class="submenu">
-                    <li>
-                        <a href="<c:url value='/admin/category/add'/>">- Thêm danh mục mới</a>
-                    </li>
-                    <li class="active">
-                        <a href="<c:url value='/admin/categories'/>">- Danh sách danh mục</a>
-                    </li>
+                    <li><a href="<c:url value='/admin/categories'/>" class="submenu-link active"><i class="fa-solid fa-list me-1"></i> Danh sách danh mục</a></li>
+                    <li><a href="<c:url value='/admin/category/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm danh mục mới</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="fa fa-desktop"></i> Quản lý sản phẩm</a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-users"></i> Quản lý tài khoản</a>
+            <li class="sidebar-item">
+                <a href="<c:url value='/admin/products'/>" class="sidebar-link">
+                    <i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm
+                </a>
+                <ul class="submenu">
+                    <li><a href="<c:url value='/admin/products'/>" class="submenu-link"><i class="fa-solid fa-list me-1"></i> Danh sách sản phẩm</a></li>
+                    <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm mới</a></li>
+                </ul>
             </li>
         </ul>
     </div>
 
+    <!-- Main Wrapper -->
     <div class="wrapper">
+        <!-- Topbar -->
         <div class="topbar">
-            <span class="topbar-user">Xin chào Thành Tài</span>
-            <a href="<c:url value='/logout'/>" class="btn btn-logout">Đăng xuất</a>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill">
+                    <i class="fa-solid fa-database me-1"></i> SQL Server: jakartaJPA
+                </span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-secondary small">
+                    Xin chào, <strong>${sessionScope.account != null && not empty sessionScope.account.fullname ? sessionScope.account.fullname : 'Quản Trị Viên'}</strong>
+                </span>
+                <a href="<c:url value='/logout'/>" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Đăng xuất
+                </a>
+            </div>
         </div>
 
+        <!-- Content Area -->
         <div class="content">
-            <h1 class="page-title">Quản lý danh mục</h1>
-            <p class="page-subtitle">Nơi bạn có thể quản lý danh mục của mình</p>
+            <!-- Header with Title & Add Button -->
+            <div class="page-header-box">
+                <div>
+                    <h1 class="page-title">Quản Lý Danh Mục</h1>
+                    <p class="page-subtitle">Xem, quản lý và chỉnh sửa toàn bộ các danh mục sản phẩm của DT SHOP</p>
+                </div>
+                <a href="<c:url value='/admin/category/add'/>" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold">
+                    <i class="fa-solid fa-circle-plus me-2"></i> Thêm Danh Mục Mới
+                </a>
+            </div>
 
-            <div class="panel-custom">
-                <div class="panel-custom-header">Danh sách danh mục</div>
-                <div class="panel-custom-body">
-                    <div class="row" style="margin-bottom: 15px;">
-                        <div class="col-sm-6">
-                            <label style="font-weight: normal;">Show 
-                                <select class="form-control input-sm" style="display: inline-block; width: auto; height: 30px; padding: 5px 10px;">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select> records per page
-                            </label>
-                        </div>
-                        <div class="col-sm-6 text-right">
-                            <label style="font-weight: normal;">Search: 
-                                <input type="search" class="form-control input-sm" style="display: inline-block; width: auto; height: 30px; padding: 5px 10px;" placeholder="">
-                            </label>
-                        </div>
+            <!-- Table Card -->
+            <div class="card-custom">
+                <div class="card-custom-header">
+                    <div class="fw-bold fs-6 text-dark d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-table-list text-primary"></i> Danh Sách Danh Mục
+                        <span class="badge bg-primary rounded-pill ms-2">${listcate != null ? listcate.size() : 0} danh mục</span>
                     </div>
+                </div>
 
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                            <thead>
-                                <tr>
-                                    <th style="width: 80px;">STT</th>
-                                    <th>Hình ảnh</th>
-                                    <th>Tên danh mục</th>
-                                    <th>Trạng thái</th>
-                                    <th style="width: 150px;">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${listcate}" var="cate" varStatus="STT">
-                                    <tr class="odd gradeX">
-                                        <td>${STT.index+1}</td>
-
-                                        <c:if test="${cate.images != null && cate.images.length() >= 5 && cate.images.substring(0,5) == 'https'}">
-                                            <c:url value="${cate.images}" var="imgUrl"></c:url>
-                                        </c:if>
-                                        <c:if test="${cate.images == null || cate.images.length() < 5 || cate.images.substring(0,5) != 'https'}">
-                                            <c:url value="/image?fname=${cate.images}" var="imgUrl"></c:url>
-                                        </c:if>
-
-                                        <td><img class="category-img" height="150" width="200" src="${imgUrl}" /></td>
-                                        <td>${cate.categoryname}</td>
-                                        <td>
-                                            <c:if test="${cate.status == 1}">
-                                                <span class="label label-success">Hoạt động</span>
-                                            </c:if>
-                                            <c:if test="${cate.status != 1}">
-                                                <span class="label label-danger">Khóa</span>
-                                            </c:if>
-                                        </td>
-                                        <td>
-                                            <a href="<c:url value='/admin/category/edit?id=${cate.categoryId}'/>" class="center">Sửa</a>
-                                            | 
-                                            <a href="<c:url value='/admin/category/delete?id=${cate.categoryId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này không?')" class="center">Xóa</a>
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;" class="text-center">STT</th>
+                                <th style="width: 110px;" class="text-center">Hình Ảnh</th>
+                                <th>Tên Danh Mục</th>
+                                <th style="width: 150px;" class="text-center">Trạng Thái</th>
+                                <th style="width: 180px;" class="text-center">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${not empty listcate}">
+                                    <c:forEach items="${listcate}" var="cate" varStatus="STT">
+                                        <tr>
+                                            <td class="text-center fw-bold text-secondary">${STT.index + 1}</td>
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${cate.images != null && cate.images.startsWith('http')}">
+                                                        <img class="category-thumb" src="${cate.images}" alt="${cate.categoryname}" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img class="category-thumb" src="<c:url value='/image?fname=${cate.images}'/>" alt="${cate.categoryname}" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark fs-6">${cate.categoryname}</div>
+                                                <div class="small text-muted">ID Danh mục: #${cate.categoryId}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${cate.status == 1}">
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-semibold">
+                                                            <i class="fa-solid fa-circle-check me-1"></i> Hoạt động
+                                                        </span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-semibold">
+                                                            <i class="fa-solid fa-lock me-1"></i> Khóa
+                                                        </span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-inline-flex gap-2">
+                                                    <a href="<c:url value='/admin/category/edit?id=${cate.categoryId}'/>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                        <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                                    </a>
+                                                    <a href="<c:url value='/admin/category/delete?id=${cate.categoryId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục [${cate.categoryname}] không?')" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                        <i class="fa-solid fa-trash-can me-1"></i> Xóa
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <i class="fa-solid fa-folder-open mb-3 text-secondary" style="font-size: 48px;"></i>
+                                            <p class="mb-0">Chưa có danh mục nào. Hãy bấm <strong>Thêm Danh Mục Mới</strong> để tạo!</p>
                                         </td>
                                     </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

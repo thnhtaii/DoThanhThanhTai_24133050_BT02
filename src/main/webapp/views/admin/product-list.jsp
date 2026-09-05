@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh Sửa Danh Mục - DT SHOP Admin</title>
+    <title>Quản Lý Sản Phẩm - DT SHOP Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -186,7 +187,12 @@
             overflow-y: auto;
         }
         .page-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         .page-title {
             color: #0f172a;
@@ -205,27 +211,42 @@
             border-radius: 20px;
             border: 1px solid #f1f5f9;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            max-width: 800px;
             overflow: hidden;
         }
         .card-custom-header {
             padding: 20px 24px;
             border-bottom: 1px solid #f1f5f9;
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .card-custom-body {
-            padding: 30px;
-        }
-        .preview-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 14px;
+        .product-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
             object-fit: cover;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            margin-top: 8px;
+            background-color: #f8fafc;
+        }
+        .table-custom th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table-custom td {
+            padding: 16px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
         }
     </style>
 </head>
@@ -233,7 +254,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="<c:url value='/admin/categories'/>" class="sidebar-brand">
+        <a href="<c:url value='/admin/products'/>" class="sidebar-brand">
             <div class="brand-logo-icon"><i class="fa-solid fa-cube"></i></div>
             <div>
                 <div class="brand-name">DT SHOP</div>
@@ -263,7 +284,7 @@
 
             <div class="menu-header">Quản trị dữ liệu</div>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/categories'/>" class="sidebar-link active">
+                <a href="<c:url value='/admin/categories'/>" class="sidebar-link">
                     <i class="fa-solid fa-folder-tree"></i> Quản lý Danh mục
                 </a>
                 <ul class="submenu">
@@ -272,18 +293,18 @@
                 </ul>
             </li>
             <li class="sidebar-item">
-                <a href="<c:url value='/admin/products'/>" class="sidebar-link">
+                <a href="<c:url value='/admin/products'/>" class="sidebar-link active">
                     <i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm
                 </a>
                 <ul class="submenu">
-                    <li><a href="<c:url value='/admin/products'/>" class="submenu-link"><i class="fa-solid fa-list me-1"></i> Danh sách sản phẩm</a></li>
+                    <li><a href="<c:url value='/admin/products'/>" class="submenu-link active"><i class="fa-solid fa-list me-1"></i> Danh sách sản phẩm</a></li>
                     <li><a href="<c:url value='/admin/product/add'/>" class="submenu-link"><i class="fa-solid fa-plus me-1"></i> Thêm sản phẩm mới</a></li>
                 </ul>
             </li>
         </ul>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Wrapper -->
     <div class="wrapper">
         <div class="topbar">
             <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill">
@@ -301,65 +322,106 @@
 
         <div class="content">
             <div class="page-header-box">
-                <h1 class="page-title">Cập Nhật Danh Mục</h1>
-                <p class="page-subtitle">Chỉnh sửa thông tin chi tiết danh mục #${cate.categoryId}</p>
+                <div>
+                    <h1 class="page-title">Quản Lý Sản Phẩm (CRUD)</h1>
+                    <p class="page-subtitle">Quản lý kho hàng, giá bán và thông tin sản phẩm của DT SHOP</p>
+                </div>
+                <a href="<c:url value='/admin/product/add'/>" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold">
+                    <i class="fa-solid fa-circle-plus me-2"></i> Thêm Sản Phẩm Mới
+                </a>
             </div>
 
             <div class="card-custom">
                 <div class="card-custom-header">
-                    <i class="fa-solid fa-pen-to-square text-primary me-2"></i> Chỉnh Sửa Danh Mục: ${cate.categoryname}
+                    <div class="fw-bold fs-6 text-dark d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked text-primary"></i> Danh Sách Sản Phẩm Trong CSDL
+                        <span class="badge bg-primary rounded-pill ms-2">${listproduct != null ? listproduct.size() : 0} sản phẩm</span>
+                    </div>
                 </div>
-                <div class="card-custom-body">
-                    <form action="<c:url value='/admin/category/update'/>" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="categoryid" value="${cate.categoryId}">
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold text-secondary small">Tên Danh Mục <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-lg" name="categoryname" value="${cate.categoryname}" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold text-secondary small">Trạng Thái Hoạt Động</label>
-                            <select class="form-select" name="status">
-                                <option value="1" ${cate.status == 1 ? 'selected' : ''}>Hoạt động (Hiển thị cho khách hàng)</option>
-                                <option value="0" ${cate.status != 1 ? 'selected' : ''}>Khóa (Tạm ẩn danh mục)</option>
-                            </select>
-                        </div>
-
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-secondary small">Tải Ảnh Mới Thay Thế (Tùy chọn)</label>
-                                <input type="file" class="form-control" name="images1" accept="image/*">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-secondary small">Hoặc Cập Nhật Đường Dẫn URL Ảnh</label>
-                                <input type="text" class="form-control" name="images" value="${cate.images}">
-                            </div>
-                        </div>
-
-                        <c:if test="${not empty cate.images}">
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold text-secondary small d-block">Ảnh hiện tại:</label>
-                                <c:choose>
-                                    <c:when test="${cate.images.startsWith('http')}">
-                                        <img src="${cate.images}" class="preview-img" alt="Preview" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="<c:url value='/image?fname=${cate.images}'/>" class="preview-img" alt="Preview" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </c:if>
-
-                        <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <a href="<c:url value='/admin/categories'/>" class="btn btn-outline-secondary rounded-pill px-4">
-                                <i class="fa-solid fa-arrow-left me-2"></i> Quay lại
-                            </a>
-                            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow">
-                                <i class="fa-solid fa-check me-2"></i> Cập Nhật Danh Mục
-                            </button>
-                        </div>
-                    </form>
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;" class="text-center">STT</th>
+                                <th style="width: 90px;" class="text-center">Hình Ảnh</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th style="width: 140px;">Giá Bán</th>
+                                <th style="width: 100px;" class="text-center">Số Lượng</th>
+                                <th style="width: 140px;">Danh Mục</th>
+                                <th style="width: 130px;" class="text-center">Trạng Thái</th>
+                                <th style="width: 170px;" class="text-center">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${not empty listproduct}">
+                                    <c:forEach items="${listproduct}" var="prod" varStatus="STT">
+                                        <tr>
+                                            <td class="text-center fw-bold text-secondary">${STT.index + 1}</td>
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${prod.images != null && prod.images.startsWith('http')}">
+                                                        <img class="product-thumb" src="${prod.images}" alt="${prod.productName}" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img class="product-thumb" src="<c:url value='/image?fname=${prod.images}'/>" alt="${prod.productName}" onerror="this.onerror=null; this.src='<c:url value='/image?fname=default'/>';">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark fs-6">${prod.productName}</div>
+                                                <div class="small text-muted text-truncate" style="max-width: 280px;">${prod.description}</div>
+                                            </td>
+                                            <td class="fw-bold text-primary fs-6">
+                                                <fmt:formatNumber value="${prod.price}" type="currency" currencySymbol="₫" maxFractionDigits="0"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">${prod.quantity} sp</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+                                                    ${prod.category != null ? prod.category.categoryname : 'N/A'}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${prod.status == 1}">
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                                                            <i class="fa-solid fa-circle-check me-1"></i> Hoạt động
+                                                        </span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                                                            <i class="fa-solid fa-lock me-1"></i> Khóa
+                                                        </span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-inline-flex gap-2">
+                                                    <a href="<c:url value='/admin/product/edit?id=${prod.productId}'/>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                        <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                                    </a>
+                                                    <a href="<c:url value='/admin/product/delete?id=${prod.productId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm [${prod.productName}] không?')" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                        <i class="fa-solid fa-trash-can me-1"></i> Xóa
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr>
+                                        <td colspan="8" class="text-center py-5 text-muted">
+                                            <i class="fa-solid fa-box-open mb-3 text-secondary" style="font-size: 48px;"></i>
+                                            <p class="mb-0">Chưa có sản phẩm nào trong kho. Hãy bấm <strong>Thêm Sản Phẩm Mới</strong>!</p>
+                                        </td>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
