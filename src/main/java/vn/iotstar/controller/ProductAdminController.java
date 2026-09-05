@@ -63,10 +63,13 @@ public class ProductAdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             try {
                 productService.delete(id);
+                resp.sendRedirect(req.getContextPath() + "/admin/products?msg=deleted");
+                return;
             } catch (Exception e) {
                 e.printStackTrace();
+                resp.sendRedirect(req.getContextPath() + "/admin/products?error=delete_failed");
+                return;
             }
-            resp.sendRedirect(req.getContextPath() + "/admin/products");
         }
     }
 

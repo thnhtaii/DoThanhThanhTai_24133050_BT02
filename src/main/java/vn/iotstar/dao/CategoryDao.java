@@ -52,11 +52,20 @@ public class CategoryDao implements ICategoryDao {
         EntityTransaction trans = enma.getTransaction();
         try {
             trans.begin();
+            // Gỡ liên kết danh mục ở các bảng con (products, videos) để không bị lỗi khóa ngoại SQL Server
+            Query qProducts = enma.createQuery("UPDATE Product p SET p.category = null WHERE p.category.categoryId = :cid");
+            qProducts.setParameter("cid", cateid);
+            qProducts.executeUpdate();
+
+            Query qVideos = enma.createQuery("UPDATE Video v SET v.category = null WHERE v.category.categoryId = :cid");
+            qVideos.setParameter("cid", cateid);
+            qVideos.executeUpdate();
+
             Category category = enma.find(Category.class, cateid);
             if (category != null) {
                 enma.remove(category);
             } else {
-                throw new Exception("Không tìm thấy");
+                throw new Exception("Không tìm thấy danh mục để xóa!");
             }
             trans.commit();
         } catch (Exception e) {

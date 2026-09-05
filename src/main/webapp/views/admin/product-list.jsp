@@ -382,6 +382,19 @@
                 </a>
             </div>
 
+            <c:if test="${param.msg == 'deleted'}">
+                <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-4" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <strong>Thành công:</strong> Đã xóa sản phẩm khỏi hệ thống!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </c:if>
+            <c:if test="${not empty param.error}">
+                <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm mb-4" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> <strong>Lỗi:</strong> Không thể xóa sản phẩm này!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </c:if>
+
             <div class="card-custom">
                 <div class="card-custom-header">
                     <div class="fw-bold fs-6 text-dark d-flex align-items-center gap-2">
